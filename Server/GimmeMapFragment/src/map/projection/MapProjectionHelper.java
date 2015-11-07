@@ -17,15 +17,15 @@ public class MapProjectionHelper {
      * @param latitude
      * @return Latitude Lonongitude
      */
-    public static LatLon merc(double longitude, double latitude) {
-        return new LatLon(mercLon(longitude), mercLat(latitude));
+    public static Point merc(double longitude, double latitude) {
+        return new Point(mercLon(longitude)-5911387, mercLat(latitude)-2439324);
     }
 
-    private static double  mercLon(double lon) {
-        return R_MAJOR * Math.toRadians(lon);
+    private static int  mercLon(double lon) {
+        return (int) (R_MAJOR * Math.toRadians(lon));
     }
 
-    private static double mercLat(double lat) {
+    private static int mercLat(double lat) {
         if (lat > 89.5) {
             lat = 89.5;
         }
@@ -42,6 +42,6 @@ public class MapProjectionHelper {
         con = Math.pow(((1.0-con)/(1.0+con)), com);
         double ts = Math.tan(0.5 * ((Math.PI*0.5) - phi))/con;
         double y = 0 - R_MAJOR * Math.log(ts);
-        return y;
+        return (int) y;
     }
 }

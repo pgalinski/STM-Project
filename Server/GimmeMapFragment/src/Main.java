@@ -1,15 +1,32 @@
+import map.MapImageHelper;
+import map.projection.LatLon;
 import map.projection.MapProjectionHelper;
+import map.projection.Point;
+import service.MapService;
+
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+import javax.xml.ws.Endpoint;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Created by Pawe³ Galiñski
  * 04.10.2015
  */
+
 public class Main {
+
+
 
 
     public static void main(String [] args) {
 
-        System.out.println(MapProjectionHelper.merc(21.5223, 53.1065));
+        MapService mapService = new MapService();
+        Endpoint endpoint = Endpoint.publish("http://localhost/mapService",mapService);
 
     }
+
+
+
 }
