@@ -9,10 +9,10 @@ import javax.jws.WebService;
 import java.io.IOException;
 
 /**
- * Created by Pawe³ Galinski
+ * Created by Paweï¿½ Galinski
  * 25.10.2015
  */
-@WebService
+@WebService(targetNamespace = "namespaceMapService")
 public class MapService {
     private static MapImageHelper imageHelper;
 
@@ -25,13 +25,18 @@ public class MapService {
         }
     }
 
-    @WebMethod
+    @WebMethod(action = "getWholeImage", operationName = "getWholeImage")
      public String getWholeImage() throws IOException {
         return imageHelper.getImage();
     }
 
-    @WebMethod
+    @WebMethod(action = "getImage", operationName = "getImage")
     public String getImage(int x1,int y1, int x2,int y2) throws IOException {
         return imageHelper.getImage(new Point(x1,y1), new Point(x2,y2));
+    }
+
+    @WebMethod(action = "hello", operationName = "hello")
+    public String hello(String name){
+        return "Hello1 " + name;
     }
 }
