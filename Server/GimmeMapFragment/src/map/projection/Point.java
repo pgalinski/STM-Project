@@ -1,10 +1,12 @@
 package map.projection;
 
+import java.io.Serializable;
+
 /**
  * Created by Pawe³ Galinski
  * 04.10.2015
  */
-public class Point {
+public class Point implements Serializable{
     int x;
     int y;
 

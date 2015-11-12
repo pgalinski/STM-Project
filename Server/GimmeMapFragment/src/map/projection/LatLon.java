@@ -1,10 +1,12 @@
 package map.projection;
 
+import java.io.Serializable;
+
 /**
  * Created by Pawe³ Galinski
  * 04.10.2015
  */
-public class LatLon {
+public class LatLon implements Serializable {
     double latitude;
     double longitude;
 
