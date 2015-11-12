@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * Created by Pawe³ Galiñski
+ * Created by Paweï¿½ Galiï¿½ski
  * 04.10.2015
  */
 
@@ -23,8 +23,8 @@ public class Main {
     public static void main(String [] args) {
 
         MapService mapService = new MapService();
-        Endpoint endpoint = Endpoint.publish("http://localhost/mapService",mapService);
-
+        Endpoint endpoint = Endpoint.publish("http://192.168.1.107/MapService",mapService);
+       // endpoint.stop();
     }
 
 
