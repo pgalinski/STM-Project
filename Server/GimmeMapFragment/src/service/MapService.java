@@ -2,7 +2,6 @@ package service;
 
 import map.MapImageHelper;
 import service.model.LatLon;
-import map.projection.MapProjectionHelper;
 import service.model.MapResponse;
 import service.model.Point;
 
@@ -22,7 +21,7 @@ public class MapService {
     public MapService() {
         imageHelper = new MapImageHelper();
         try {
-            imageHelper.loadMapFromFile("images/osrt_map.png");
+            imageHelper.loadMapFromFile("images/krk_map.png", new LatLon(50.1087,19.8471), new LatLon(50.0115,20.0217));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,10 +52,12 @@ public class MapService {
 
     @WebMethod(action = "getImageByLatLon", operationName = "getImageByLatLon")
     public MapResponse getImageByLatLon(@WebParam(name = "topLeft") LatLon topLeft, @WebParam(name = "bottomRight") LatLon bottomRight) throws MapServiceException {
-        Point topLeftP = MapProjectionHelper.merc(topLeft.getLatitude(), topLeft.getLongitude());
-        Point bottomRightP = MapProjectionHelper.merc(bottomRight.getLatitude(), bottomRight.getLongitude());
         try {
-            return new MapResponse(imageHelper.getImage(),new Point(0,0),new Point(1000,1000));
+
+            Point topLeftP = imageHelper.getPointInPx(topLeft);
+            Point bottomRightP = imageHelper.getPointInPx(bottomRight);
+
+            return new MapResponse(imageHelper.getImage(topLeftP,bottomRightP),topLeftP,bottomRightP);
         } catch (IOException e) {
             throw new MapServiceException();
         }
