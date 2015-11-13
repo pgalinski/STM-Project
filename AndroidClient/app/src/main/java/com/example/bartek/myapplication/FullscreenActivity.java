@@ -25,35 +25,27 @@ import java.io.IOException;
 public class FullscreenActivity extends AppCompatActivity {
     MyImageView iv;
     Button downloadImageButton;
-    ImageGetter imageGetter = new ImageGetter();
-    boolean imageWasLoaded = false;
-    boolean rectangleWasDrawn = false;
+    InternetImageGetter imageGetter ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageGetter.setDrawableImage(getResources());
-
+imageGetter = new InternetImageGetter() {
+    @Override
+    public void setImage(Bitmap _bmp) {
+        bmp = _bmp;
+        iv.SetRectangleSize(0, 0, 0, 0);
+        iv.setImageBitmap(_bmp);
+    }
+};
         setContentView(R.layout.activity_fullscreen);
 
-
         iv = (MyImageView) findViewById(R.id.imageView);
-
         downloadImageButton = (Button) findViewById(R.id.downloadImageButton);
         downloadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                try {
-                    bmp = imageGetter.GetImage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                }
-
-                iv.SetRectangleSize(0, 0, 0, 0);
-                iv.setImageBitmap(bmp);
+                imageGetter.execute("test");
             }
         });
 
@@ -95,7 +87,6 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     boolean isOnClick;
-    float toRight = 0;
     Bitmap bmp = null;
     float startX;
     float startY;
