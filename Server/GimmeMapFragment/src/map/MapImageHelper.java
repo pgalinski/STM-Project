@@ -52,15 +52,6 @@ public class MapImageHelper {
         return getBase64String(image);
     }
 
-    public String getImage(LatLon topLeft, LatLon bottomRight) throws IOException {
-        int x1 = (int) ((Math.abs(topLeft.getLongitude() - getTopLeft().getLongitude()))/Math.abs(getBottomRight().getLongitude() - getTopLeft().getLongitude())) * getImageWidth();
-        int y1 = (int) (Math.abs(topLeft.getLatitude() - getTopLeft().getLatitude())/Math.abs(getBottomRight().getLatitude() - getTopLeft().getLatitude())) * getImageHeight();
-
-        int x2 = (int) ((Math.abs(bottomRight.getLongitude() - getTopLeft().getLongitude()))/Math.abs(getBottomRight().getLongitude() - getTopLeft().getLongitude())) * getImageWidth();
-        int y2 = (int) (Math.abs(bottomRight.getLatitude() - getTopLeft().getLatitude())/Math.abs(getBottomRight().getLatitude() - getTopLeft().getLatitude())) * getImageHeight();
-
-        return getImage(new Point(x1,y1),new Point(x2,y2));
-    }
 
     public Point getPointInPx(LatLon latlon){
         double tmpx = (Math.abs(latlon.getLongitude() - getTopLeft().getLongitude())) / Math.abs(getBottomRight().getLongitude() - getTopLeft().getLongitude());
