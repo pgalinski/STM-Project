@@ -1,41 +1,44 @@
 package map.projection;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
 
 /**
- * Created by Pawe³ Galinski
+ * Created by Paweï¿½ Galinski
  * 04.10.2015
  */
-public class Point implements Serializable{
-    int x;
-    int y;
 
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Point")
+public class Point {
+    @XmlElement(name = "x")
+    protected int x;
+    @XmlElement(name = "y")
+    protected int y;
+
+    public Point(){}
+    public Point(int _x, int _y) {
+        this.x = _x;
+        this.y = _y;
     }
 
     public int getX() {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setX(int _x) {
+        this.x = _x;
     }
 
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setY(int _y) {
+        this.y = _y;
     }
 
-    @Override
-    public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
-    }
 }
