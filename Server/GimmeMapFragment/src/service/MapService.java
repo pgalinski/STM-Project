@@ -1,9 +1,10 @@
 package service;
 
 import map.MapImageHelper;
-import map.projection.LatLon;
+import service.model.LatLon;
 import map.projection.MapProjectionHelper;
-import map.projection.Point;
+import service.model.MapResponse;
+import service.model.Point;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -28,18 +29,18 @@ public class MapService {
     }
 
     @WebMethod(action = "getWholeImage", operationName = "getWholeImage")
-    public String getWholeImage() throws MapServiceException {
+    public MapResponse getWholeImage() throws MapServiceException {
         try {
-            return imageHelper.getImage();
+            return new MapResponse(imageHelper.getImage(),new Point(0,0),new Point(1000,1000));
         } catch (IOException e) {
             throw new MapServiceException();
         }
     }
 
     @WebMethod(action = "getImage", operationName = "getImage")
-    public String getImage(@WebParam(name = "topLeft") Point topLeft,@WebParam(name = "bottomRight") Point bottmRight) throws MapServiceException {
+    public MapResponse getImage(@WebParam(name = "topLeft") Point topLeft,@WebParam(name = "bottomRight") Point bottmRight) throws MapServiceException {
         try {
-            return imageHelper.getImage(topLeft,bottmRight);
+            return new MapResponse(imageHelper.getImage(topLeft,bottmRight),topLeft,bottmRight);
         } catch (IOException e) {
             throw new MapServiceException();
         }
@@ -51,11 +52,11 @@ public class MapService {
     }
 
     @WebMethod(action = "getImageByLatLon", operationName = "getImageByLatLon")
-    public String getImageByLatLon(@WebParam(name = "topLeft") LatLon topLeft, @WebParam(name = "bottomRight") LatLon bottomRight) throws MapServiceException {
+    public MapResponse getImageByLatLon(@WebParam(name = "topLeft") LatLon topLeft, @WebParam(name = "bottomRight") LatLon bottomRight) throws MapServiceException {
         Point topLeftP = MapProjectionHelper.merc(topLeft.getLatitude(), topLeft.getLongitude());
         Point bottomRightP = MapProjectionHelper.merc(bottomRight.getLatitude(), bottomRight.getLongitude());
         try {
-            return imageHelper.getImage(topLeftP,bottomRightP);
+            return new MapResponse(imageHelper.getImage(),new Point(0,0),new Point(1000,1000));
         } catch (IOException e) {
             throw new MapServiceException();
         }

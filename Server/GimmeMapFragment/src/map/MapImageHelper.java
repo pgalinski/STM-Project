@@ -1,8 +1,6 @@
 package map;
 
-import base64.image.encoder.Base64ImageEncoder;
-import map.projection.Point;
-import sun.misc.BASE64Encoder;
+import service.model.Point;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -1,4 +1,4 @@
-package map.projection;
+package service.model;
 
 import java.io.Serializable;
 

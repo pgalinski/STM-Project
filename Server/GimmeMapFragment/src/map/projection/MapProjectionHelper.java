@@ -1,5 +1,7 @@
 package map.projection;
 
+import service.model.Point;
+
 /**
  * Created by Pawe³ Galinski
  * 04.10.2015
