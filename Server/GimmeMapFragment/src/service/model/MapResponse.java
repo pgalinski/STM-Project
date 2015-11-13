@@ -1,15 +1,29 @@
 package service.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 /**
  * Created by Pawe³ Galinski
  * 10.10.2015
  */
-public class MapResponse implements Serializable{
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MapResponse")
+public class MapResponse{
+
+    @XmlElement(name = "base64Map")
     String base64Map;
+    @XmlElement(name = "topLeft")
     Point topLeft;
+    @XmlElement(name = "bottomRight")
     Point bottomRight;
+
+    public MapResponse() {
+    }
 
     public MapResponse(String base64Map, Point topLeft, Point bottomRight) {
         this.base64Map = base64Map;

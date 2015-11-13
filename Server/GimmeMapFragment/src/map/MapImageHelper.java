@@ -37,6 +37,15 @@ public class MapImageHelper {
         return getBase64String(image.getSubimage(x,y,w,h));
     }
 
+    public int getImageHeight(){
+        return image.getHeight();
+    }
+
+    public int getImageWidth(){
+        return image.getWidth();
+    }
+
+
 
     private String getBase64String(BufferedImage img) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

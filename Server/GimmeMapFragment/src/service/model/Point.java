@@ -20,6 +20,7 @@ public class Point {
     protected int y;
 
     public Point(){}
+
     public Point(int _x, int _y) {
         this.x = _x;
         this.y = _y;

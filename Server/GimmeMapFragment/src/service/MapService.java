@@ -31,7 +31,7 @@ public class MapService {
     @WebMethod(action = "getWholeImage", operationName = "getWholeImage")
     public MapResponse getWholeImage() throws MapServiceException {
         try {
-            return new MapResponse(imageHelper.getImage(),new Point(0,0),new Point(1000,1000));
+            return new MapResponse(imageHelper.getImage(),new Point(0,0),new Point(imageHelper.getImageWidth(),imageHelper.getImageHeight()));
         } catch (IOException e) {
             throw new MapServiceException();
         }
