@@ -24,46 +24,62 @@ import javax.xml.parsers.SAXParserFactory;
 /**
  * Created by bartek on 11/12/2015.
  */
-public class InternetImageGetter extends AsyncTask<String, Void, String> {
+public class InternetImageGetter extends AsyncTask<Object, Void, MapResponse> {
 
-    String imageBase64 = "";
     private Exception exception;
     private static final String NAMESPACE = "namespaceMapService";
-    private static String URL="http://192.168.1.107/MapService?wsdl";
-    private static final String METHOD_NAME = "getImage";
-    private static final String SOAP_ACTION =  "getImage";
-    protected String doInBackground(String... urls) {
+    //private static String URL="http://192.168.1.107/MapService?wsdl";
+    private static String URL="http://192.168.43.114/MapService?wsdl";
+    private static final String getImage = "getImage";
+    private static final String getImageByLatLon =  "getImageByLatLon";
+    private static final String getWholeImage =  "getWholeImage";
 
-        SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-        Point p = new Point();
-        p.x = 0;
-        p.y = 0;
+    protected MapResponse doInBackground(Object... urls) {
+        String methodName;
+        MapResponse mapResponse = new MapResponse();
+        if(urls.length == 4)
+            methodName = getImage;
+        else if(urls.length == 2)
+           methodName = getImageByLatLon;
+        else
+            methodName = getWholeImage;
+
+        SoapObject request = new SoapObject(NAMESPACE, methodName);
+        if(urls.length == 4) {
+            addPointToRequest(urls[0], urls[1], request, "topLeft");
+            addPointToRequest(urls[2], urls[3], request, "bottomRight");
+        }
+        else if (urls.length ==2)
+        {
+            addLatLonToRequest(urls[0], request,"topLeft");
+            addLatLonToRequest(urls[1], request,"bottomRight");
+        }
 
 
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.addMapping(NAMESPACE, "mapResponse", MapResponse.class);
+        MarshalDouble md = new MarshalDouble();
+        md.register(envelope);
+        envelope.setOutputSoapObject(request);
 
-
-            PropertyInfo propInfo=new PropertyInfo();
-            propInfo.name="topLeft";
-            propInfo.type= p.getClass();
-            propInfo.setValue(p);
-            request.addProperty(propInfo);
-
-        Point p2 = new Point();
-        p2.x = 100;
-        p2.y = 100;
-        PropertyInfo propInfo2=new PropertyInfo();
-        propInfo2.name="bottomRight";
-        propInfo2.type= p.getClass();
-        propInfo2.setValue(p2);
-        request.addProperty(propInfo2);
-            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-            envelope.setOutputSoapObject(request);
-
-            HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
             try {
-                androidHttpTransport.call(SOAP_ACTION, envelope);
-                SoapPrimitive resultsRequestSOAP = (SoapPrimitive) envelope.getResponse();
-                imageBase64  = resultsRequestSOAP.toString();
+                androidHttpTransport.call(methodName, envelope);
+                SoapObject resultsRequestSOAP = (SoapObject) envelope.getResponse();
+
+                mapResponse.base64Map = resultsRequestSOAP.getProperty("base64Map").toString();
+                mapResponse.topLeft = new Point();
+                SoapObject  topLeft = (SoapObject)resultsRequestSOAP.getProperty("topLeft");
+                mapResponse.topLeft.setProperty(0, topLeft.getProperty("x"));
+                mapResponse.topLeft.setProperty(1, topLeft.getProperty("y"));
+
+
+                mapResponse.bottomRight = new Point();
+
+                SoapObject  bottomRight = (SoapObject)resultsRequestSOAP.getProperty("bottomRight");
+                mapResponse.bottomRight .setProperty(0, bottomRight.getProperty("x"));
+                mapResponse.bottomRight .setProperty(1, bottomRight.getProperty("y"));
+
             }
             catch (XmlPullParserException ex)
             {
@@ -72,18 +88,36 @@ public class InternetImageGetter extends AsyncTask<String, Void, String> {
             }
             catch (Exception ex) {
                 ex.toString();
-
             }
 
-            return imageBase64 ;
+            return mapResponse;
 
     }
 
-    protected void onPostExecute(String feed) {
+    private void addLatLonToRequest(Object latLon, SoapObject request, String propertyName) {
+        PropertyInfo propInfo = new PropertyInfo();
+        propInfo.name = propertyName;
+        propInfo.type = latLon.getClass();
+        propInfo.setValue(latLon);
+        request.addProperty(propInfo);
+    }
+
+    private void addPointToRequest(Object x, Object y, SoapObject request, String propertyName){
+    Point p = new Point();
+    p.x = (int)x;
+    p.y = (int)y;
+    PropertyInfo propInfo = new PropertyInfo();
+    propInfo.name = propertyName;
+    propInfo.type = p.getClass();
+    propInfo.setValue(p);
+    request.addProperty(propInfo);
+
+}
+    protected void onPostExecute(MapResponse mapResponse) {
         // TODO: check this.exception
         // TODO: do something with the feed
         try {
-            setImage(getImage());
+            setImage(getImage(mapResponse.base64Map),mapResponse.topLeft, mapResponse.bottomRight);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -91,14 +125,12 @@ public class InternetImageGetter extends AsyncTask<String, Void, String> {
         }
     }
 
-    public Bitmap getImage() throws IOException, XmlPullParserException {
-        String image = imageBase64;
-        imageBase64 = "";
+    public Bitmap getImage(String image) throws IOException, XmlPullParserException {
         byte[] decodedString = Base64.decode(image, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return decodedByte;
     }
-    public void setImage(Bitmap bmp)
+    public void setImage(Bitmap bmp, Point topLeft, Point bottomRight)
     {
     }
 }

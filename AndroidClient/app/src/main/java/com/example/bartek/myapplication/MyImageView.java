@@ -34,7 +34,7 @@ public class MyImageView extends ImageView{
 
         if (_leftx > 0 && _rightx > 0 && _bottomy > 0 && _topy > 0) {
             Paint paint = new Paint();
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.GRAY);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(10);
             canvas.drawRect(_leftx, _topy, _rightx, _bottomy, paint);

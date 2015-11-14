@@ -4,20 +4,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/downloadImageButton"
-        android:text="pobierz obrazek"/>
-
-
+        android:weightSum="1"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:id="@+id/downloadImageButton"
+            android:text="pobierz obrazek"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:id="@+id/showPopUp"
+            android:text="podaj wspolrzedne"/>
+    </LinearLayout>
 
     <com.example.bartek.myapplication.MyImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imageView"
-
-        />
-
-    </LinearLayout>
+        android:id="@+id/imageView" />
+</LinearLayout>
