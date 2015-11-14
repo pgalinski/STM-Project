@@ -21,7 +21,7 @@ public class MapService {
     public MapService() {
         imageHelper = new MapImageHelper();
         try {
-            imageHelper.loadMapFromFile("images/krk_map.png", new LatLon(50.1087,19.8471), new LatLon(50.0115,20.0217));
+            imageHelper.loadMapFromFile("images/krk_mapa.png", new LatLon(50.1185,19.8547), new LatLon(50.0226,20.0471));
         } catch (IOException e) {
             e.printStackTrace();
         }
