@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -139,8 +141,8 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void setImage(Bitmap _bmp, Point topLeft, Point bottomRight) {
                 bmp = _bmp;
-                iv.SetRectangleSize(0, 0, 0, 0);
-                iv.setImageBitmap(_bmp);
+                setImageBitmap(0, 0, 0, 0);
+
                 actualStartX = topLeft.x;
                 actualStartY = topLeft.y;
                 actualEndX = bottomRight.x;
@@ -201,9 +203,35 @@ public class FullscreenActivity extends AppCompatActivity {
                 topY = endY;
                 bottomY = startY;
             }
-
-            iv.SetRectangleSize(leftX, topY, rightX, bottomY);
-            iv.setImageBitmap(bmp);
+            setImageBitmap(leftX, topY, rightX, bottomY);
         }
+    }
+    private void setImageBitmap(float leftX,float topY, float rightX,float bottomY) {
+        if (bmp != null && (scaledBitmap == null || (leftX == 0 && topY == 0 && rightX == 0 && bottomY == 0))) {
+            // Get current dimensions AND the desired bounding box
+            int width = bmp.getWidth();
+            int height = bmp.getHeight();
+            int ivWidth = iv.getWidth();
+            int ivHeight = iv.getHeight();
+
+            int boundingX = dpToPx(ivWidth);
+            int boundingY = dpToPx(ivHeight);
+            float xScale = ((float) boundingX) / width;
+            float yScale = ((float) boundingY) / height;
+            Matrix matrix = new Matrix();
+            matrix.postScale(xScale, yScale);
+            scaledBitmap = Bitmap.createBitmap(bmp, 0, 0, width, height, matrix, true);
+        }
+        if (scaledBitmap != null) {
+            iv.SetRectangleSize(leftX, topY, rightX, bottomY);
+            iv.setImageBitmap(scaledBitmap);
+        }
+    }
+    Bitmap scaledBitmap;
+
+    private int dpToPx(int dp)
+    {
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
     }
 }
