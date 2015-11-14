@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,26 +27,72 @@ public class FullscreenActivity extends AppCompatActivity {
     MyImageView iv;
     Button downloadImageButton;
     InternetImageGetter imageGetter ;
-
+    ProgressBarFragment progressBarFragment;
+    FragmentManager fm = getSupportFragmentManager();
+    private int CalculateNewPoint(int end, int neww, int pointStart, int pointEnd)
+    {
+        float x1 = (float)neww/end;
+        int x2 = pointEnd-pointStart;
+        int result = Math.round(x1*x2);
+        result = result + pointStart;
+        return result;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-imageGetter = new InternetImageGetter() {
-    @Override
-    public void setImage(Bitmap _bmp) {
-        bmp = _bmp;
-        iv.SetRectangleSize(0, 0, 0, 0);
-        iv.setImageBitmap(_bmp);
-    }
-};
+        setTitle("Map Service");
         setContentView(R.layout.activity_fullscreen);
 
+
+        Button showPopUpButton = (Button) findViewById(R.id.showPopUp);
+
+        showPopUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LatLonFragment latLonFragment = new LatLonFragment()
+                {
+                    @Override
+                    public void OnOk(LatLon topLeft, LatLon bottomRight) {
+
+                           createImageGetter();
+                           imageGetter.execute(new Object[]{topLeft, bottomRight});
+
+                    }
+                };
+                // Show DialogFragment
+                latLonFragment.show(fm, "Dialog Fragment");
+            }
+        });
         iv = (MyImageView) findViewById(R.id.imageView);
         downloadImageButton = (Button) findViewById(R.id.downloadImageButton);
         downloadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageGetter.execute("test");
+                try {
+
+                    int maxX = iv.getWidth();
+                    int maxY = iv.getHeight();
+                    if (maxX > 0 && maxY > 0 && endX > 0 && endY > 0) {
+                        iStartX = CalculateNewPoint(maxX, Math.round(startX), actualStartX, actualEndX);
+                        iEndX = CalculateNewPoint(maxX, Math.round(endX), actualStartX, actualEndX);
+                        iStartY = CalculateNewPoint(maxY, Math.round(startY), actualStartY, actualEndY);
+                        iEndY = CalculateNewPoint(maxY, Math.round(endY), actualStartY, actualEndY);
+                    }
+
+                       createImageGetter();
+
+                       if ((iEndX - iStartX) > 0 && (iEndY - iStartY) > 0) {
+                           imageGetter.execute(new Object[]{iStartX, iStartY, iEndX, iEndY});
+                       } else {
+                           imageGetter.execute();
+                       }
+
+                }
+                catch (Exception e)
+                {
+                    e.toString();
+                }
             }
         });
 
@@ -85,13 +132,52 @@ imageGetter = new InternetImageGetter() {
             }
         });
     }
+    private void createImageGetter(){
+        progressBarFragment = new ProgressBarFragment();
+        progressBarFragment.show(fm,"Pobieranie...");
+        imageGetter = new InternetImageGetter() {
+            @Override
+            public void setImage(Bitmap _bmp, Point topLeft, Point bottomRight) {
+                bmp = _bmp;
+                iv.SetRectangleSize(0, 0, 0, 0);
+                iv.setImageBitmap(_bmp);
+                actualStartX = topLeft.x;
+                actualStartY = topLeft.y;
+                actualEndX = bottomRight.x;
+                actualEndY = bottomRight.y;
 
+                startX = 0;
+                endX = 0;
+                startY = 0;
+                endY = 0;
+                dismissProgressBar();
+            }
+        };
+    }
+
+    private void dismissProgressBar(){
+        if(progressBarFragment != null)
+        {
+            progressBarFragment.dismiss();
+            progressBarFragment = null;
+        }
+    }
     boolean isOnClick;
     Bitmap bmp = null;
     float startX;
     float startY;
     float endX;
     float endY;
+
+    int iStartX;
+    int iStartY;
+    int iEndX;
+    int iEndY;
+
+    int actualStartX;
+    int actualStartY;
+    int actualEndX;
+    int actualEndY;
 
     private void redraw() {
         if (iv != null && bmp != null) {

@@ -31,14 +31,7 @@ public class ImageGetter {
     private static final String METHOD_NAME = "hello";
     private static final String SOAP_ACTION =  "http://service/mapservice/hello";
 
-    private void x() throws IOException, XmlPullParserException {
-
-        AsyncTask<String, Void, String> result = new InternetImageGetter().execute("test");
-        String hello = result.toString();
-        hello.toString();
-    }
     public String DownloadImage() throws IOException, XmlPullParserException {
-        x();
         Bitmap selectedImage = null;// BitmapFactory.decodeFile(filePath);
        selectedImage = BitmapFactory.decodeResource(resources, R.drawable.test);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
